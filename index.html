@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Logical Reasoning Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+    .container {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .question {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    button {
+      padding: 0.5rem 1.5rem;
+      margin: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .score {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+    }
+    .timer {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer hidden" id="timer">Time: 60s</div>
+    <div class="question hidden" id="question">Loading...</div>
+    <div id="buttons" class="hidden">
+      <button onclick="answer('odd')">Ganjil</button>
+      <button onclick="answer('even')">Genap</button>
+    </div>
+    <div class="score hidden" id="score">Benar: 0 | Salah: 0</div>
+    <button id="startBtn" onclick="startGame()">Mulai</button>
+    <button id="restartBtn" class="hidden" onclick="restartGame()">Mulai Ulang</button>
+  </div>
+
+  <script>
+    let correct = 0;
+    let wrong = 0;
+    let timeLeft = 60;
+    let currentAnswer;
+    let countdown;
+
+    function generateQuestion() {
+      const a = Math.floor(Math.random() * 10);
+      const b = Math.floor(Math.random() * 10);
+      const sum = a + b;
+      currentAnswer = sum % 2 === 0 ? 'even' : 'odd';
+      document.getElementById('question').innerText = `${a} + ${b} = ?`;
+    }
+
+    function answer(choice) {
+      if (choice === currentAnswer) {
+        correct++;
+      } else {
+        wrong++;
+      }
+      updateScore();
+      generateQuestion();
+    }
+
+    function updateScore() {
+      document.getElementById('score').innerText = `Benar: ${correct} | Salah: ${wrong}`;
+    }
+
+    function startTimer() {
+      const timerElement = document.getElementById('timer');
+      countdown = setInterval(() => {
+        timeLeft--;
+        timerElement.innerText = `Time: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function startGame() {
+      correct = 0;
+      wrong = 0;
+      timeLeft = 60;
+      updateScore();
+      document.getElementById('startBtn').classList.add('hidden');
+      document.getElementById('restartBtn').classList.add('hidden');
+      document.getElementById('timer').classList.remove('hidden');
+      document.getElementById('question').classList.remove('hidden');
+      document.getElementById('buttons').classList.remove('hidden');
+      document.getElementById('score').classList.remove('hidden');
+      document.getElementById('timer').innerText = `Time: 60s`;
+      generateQuestion();
+      startTimer();
+    }
+
+    function endGame() {
+      document.getElementById('question').innerText = 'Waktu Habis!';
+      document.getElementById('buttons').classList.add('hidden');
+      document.getElementById('restartBtn').classList.remove('hidden');
+    }
+
+    function restartGame() {
+      startGame();
+    }
+  </script>
+</body>
+</html>
